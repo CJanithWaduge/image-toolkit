@@ -293,6 +293,9 @@ body { background-color: #09090b; color: #e7e0ed; }
       <a class="hover:text-primary transition-colors" href="#">Ad Space — 728×90</a>
     </div>
   </footer>
+
+  <!-- Toast notification -->
+  <div id="toast" class="hidden fixed bottom-16 left-1/2 -translate-x-1/2 z-50 px-lg py-md rounded-lg bg-[#22c55e] text-white font-label-md text-label-md shadow-lg transition-all duration-400 translate-y-2 opacity-0">Completed</div>
 </div>
 
 <script>
@@ -422,13 +425,14 @@ convProcessBtn.addEventListener('click', async () => {
     const data = await resp.json();
     results.push(data);
     if (data.download_token) convDownloadTokens.push(data.download_token);
+    const actionLabel = upscale ? 'Upscaled' : 'Converted';
     convResults.innerHTML = results.map(r =>
       `<div class="flex items-center justify-between p-sm rounded-lg bg-surface border border-surface-variant group">
         <div class="flex items-center gap-md overflow-hidden">
           <span class="material-symbols-outlined ${r.success ? 'text-[#4ade80]' : 'text-error'} text-[18px]">${r.success ? 'check_circle' : 'error'}</span>
           <div class="flex flex-col">
             <span class="font-code text-code text-on-surface truncate">${r.output_name || r.filename}</span>
-            <span class="font-label-md text-label-md text-on-surface-variant">${r.success ? r.output_path || 'Done' : r.error}</span>
+            <span class="font-label-md text-label-md text-on-surface-variant">${r.success ? actionLabel : r.error}</span>
           </div>
         </div>
       </div>`
@@ -436,10 +440,22 @@ convProcessBtn.addEventListener('click', async () => {
   }
   convProgressBar.style.width = '100%';
   convProgressPct.textContent = '100%';
-  convProgressStatus.textContent = 'Complete';
+  convProgressStatus.textContent = 'All files processed successfully';
   if (convDownloadTokens.length > 0) convDownloadRow.classList.remove('hidden');
   setStatus(`Done — ${convFiles.length} file(s) processed`);
+  showToast(`Completed — ${convFiles.length} file(s) ${upscale ? 'upscaled' : 'converted'}`);
 });
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.remove('hidden', 'translate-y-2', 'opacity-0');
+  t.classList.add('translate-y-0', 'opacity-100');
+  setTimeout(() => {
+    t.classList.add('translate-y-2', 'opacity-0');
+    setTimeout(() => t.classList.add('hidden'), 400);
+  }, 3500);
+}
 
 convDownloadBtn.addEventListener('click', async () => {
   if (convDownloadTokens.length === 0) return;
@@ -553,6 +569,7 @@ metaGenerateBtn.addEventListener('click', async () => {
   metaGenerateBtn.disabled = false; metaGenerateBtn.classList.remove('opacity-50', 'cursor-not-allowed');
   metaProgressFile.classList.add('hidden');
   setStatus(`Done — ${metaFiles.length} image(s) processed`);
+  showToast(`Completed — ${metaFiles.length} file(s) analyzed`);
 });
 
 function renderMetaResults() {
