@@ -50,10 +50,15 @@ def api_converter_process():
     enable_upscale = request.form.get("upscale", "false").lower() == "true"
     model = request.form.get("model", "remacri-4x")
     scale = int(request.form.get("scale", "2"))
+    user_output_dir = request.form.get("output_dir", "").strip()
 
     mode = ConversionMode.PNG_TO_JPEG if direction == "png2jpeg" else ConversionMode.JPEG_TO_PNG
     suffix = Path(file.filename).suffix
-    output_dir = tempfile.mkdtemp()
+    if user_output_dir:
+        output_dir = os.path.abspath(user_output_dir)
+        os.makedirs(output_dir, exist_ok=True)
+    else:
+        output_dir = tempfile.mkdtemp()
     output_name = f"{Path(file.filename).stem}_{uuid.uuid4().hex[:8]}"
     input_path = os.path.join(output_dir, f"input{suffix}")
 

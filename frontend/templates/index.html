@@ -187,6 +187,16 @@ tailwind.config = {
                 <span class="font-body-md text-body-md text-on-surface group-hover:text-primary transition-colors">Enable AI Upscaling</span>
               </label>
             </div>
+            <div class="pt-sm border-t border-surface-variant">
+              <label class="font-label-md text-label-md text-on-surface-variant block mb-xs">Save To</label>
+              <div class="flex gap-sm">
+                <input id="conv-output-dir" type="text" value="" placeholder="Server path (leave empty for temp)" class="flex-1 bg-background border border-surface-variant rounded-lg px-sm py-xs font-code text-code text-on-surface focus:ring-1 focus:ring-inverse-primary focus:border-inverse-primary outline-none transition-all">
+                <button id="conv-browse-btn" class="flex items-center gap-xs px-md py-xs rounded-lg border border-surface-variant text-on-surface-variant hover:bg-surface transition-colors font-label-md text-label-md shrink-0">
+                  <span class="material-symbols-outlined text-[16px]">folder_open</span>
+                  Browse
+                </button>
+              </div>
+            </div>
           </div>
 
           <!-- Upscaling Settings -->
@@ -360,8 +370,25 @@ const convProgressBar = document.getElementById('conv-progress-bar');
 const convProgressText = document.getElementById('conv-progress-text');
 const convProgressPct = document.getElementById('conv-progress-pct');
 const convProgressStatus = document.getElementById('conv-progress-status');
+const convOutputDir = document.getElementById('conv-output-dir');
+const convBrowseBtn = document.getElementById('conv-browse-btn');
 let convFiles = [];
+let convDirHandle = null;
 let convDownloadTokens = [];
+
+convBrowseBtn.addEventListener('click', async () => {
+  if (typeof window.showDirectoryPicker === 'function') {
+    try {
+      const handle = await window.showDirectoryPicker({ mode: 'readwrite' });
+      convDirHandle = handle;
+      convOutputDir.value = handle.name;
+    } catch (e) {
+      if (e.name !== 'AbortError') convOutputDir.select();
+    }
+  } else {
+    convOutputDir.select();
+  }
+});
 
 convUpscaleToggle.addEventListener('change', () => {
   convUpscaleSettings.classList.toggle('hidden', !convUpscaleToggle.checked);
@@ -428,6 +455,7 @@ convProcessBtn.addEventListener('click', async () => {
     fd.append('upscale', upscale);
     fd.append('model', model);
     fd.append('scale', scale);
+    fd.append('output_dir', convOutputDir.value.trim());
     const resp = await fetch('/api/converter/process', { method: 'POST', body: fd });
     const data = await resp.json();
     results.push(data);
