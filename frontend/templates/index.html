@@ -135,7 +135,7 @@ body { background-color: #09090b; color: #e7e0ed; }
           </div>
         </div>
       </div>
-      <div class="w-full lg:w-2/3 flex flex-col gap-md min-h-0">
+      <div class="w-full lg:w-2/3 flex flex-col gap-md flex-1 min-h-0">
         <div class="surface-card rounded-lg p-md flex flex-col gap-md flex-shrink-0">
           <h3 class="font-h3 text-h3 text-on-surface">Conversion Settings</h3>
           <div class="flex gap-md">
@@ -186,7 +186,7 @@ body { background-color: #09090b; color: #e7e0ed; }
             <p class="font-label-md text-label-md text-on-surface-variant mt-xs">Pick a folder to save processed files. Uses File System Access API in supported browsers.</p>
           </div>
         </div>
-        <div class="surface-card rounded-lg flex flex-col flex-1 min-h-0 overflow-hidden">
+        <div class="surface-card rounded-lg flex flex-col flex-1 overflow-hidden min-h-[250px]">
           <div class="p-md border-b border-[#27272a] bg-[#18181b] flex-shrink-0">
             <h3 class="font-h3 text-h3 text-on-surface">Results</h3>
           </div>
@@ -264,8 +264,8 @@ body { background-color: #09090b; color: #e7e0ed; }
           </div>
         </div>
       </div>
-      <div class="w-full lg:w-2/3 flex flex-col gap-md min-h-0">
-        <div class="surface-card rounded-lg flex flex-col flex-1 min-h-0 overflow-hidden">
+      <div class="w-full lg:w-2/3 flex flex-col gap-md flex-1 min-h-0">
+        <div class="surface-card rounded-lg flex flex-col flex-1 overflow-hidden min-h-[250px]">
           <div class="p-md border-b border-[#27272a] flex justify-between items-center bg-[#18181b] z-10 sticky top-0 rounded-t-lg">
             <h2 class="font-h3 text-h3 text-on-surface flex items-center gap-xs">
               <span class="material-symbols-outlined text-[18px] text-primary">data_object</span>
@@ -460,7 +460,7 @@ function showToast(msg) {
 convDownloadBtn.addEventListener('click', async () => {
   if (convDownloadTokens.length === 0) return;
   if (convDirHandle && typeof convDirHandle.values === 'function') {
-    for (const tok of downloadTokens) {
+    for (const tok of convDownloadTokens) {
       const resp = await fetch(`/api/converter/download/${tok}`);
       if (!resp.ok) continue;
       const blob = await resp.blob();
@@ -478,9 +478,9 @@ convDownloadBtn.addEventListener('click', async () => {
         URL.revokeObjectURL(a.href);
       }
     }
-    setStatus(`Downloaded ${downloadTokens.length} file(s) to ${convDirHandle.name}`);
+    setStatus(`Downloaded ${convDownloadTokens.length} file(s) to ${convDirHandle.name}`);
   } else {
-    for (const tok of downloadTokens) {
+    for (const tok of convDownloadTokens) {
       const a = document.createElement('a');
       a.href = `/api/converter/download/${tok}`;
       a.download = '';
