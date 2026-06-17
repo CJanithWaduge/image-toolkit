@@ -32,13 +32,15 @@ class ProcessingPipeline:
             base_path = Path(job.output_dir) / f"{job.output_name}{ext}"
 
             if job.upscale_enabled:
+                self.upscaler.model = job.upscale_model
+                self.upscaler.scale = job.upscale_scale
                 temp_path = Path(job.output_dir) / f"__temp_{job.output_name}{ext}"
                 temp_path_str, final_path_str = str(temp_path), str(base_path)
 
                 log(f"Converting: {job.output_name}")
                 self.converter.convert(job.source_path, temp_path_str)
 
-                log(f"Upscaling: {job.output_name}")
+                log(f"Upscaling: {job.output_name} ({self.upscaler.model} {self.upscaler.scale}x)")
                 self.upscaler.upscale(temp_path_str, final_path_str)
                 temp_path.unlink(missing_ok=True)
 

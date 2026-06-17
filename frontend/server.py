@@ -1,10 +1,12 @@
 import logging
 import os
 import tempfile
+import threading
 import uuid
 from pathlib import Path
 
-from flask import Flask, jsonify, render_template, request
+import tempfile
+from flask import Flask, jsonify, render_template, request, send_file
 
 from backend.converter import ConversionMode, Converter
 from backend.models import ImageJob
@@ -75,11 +77,16 @@ def api_converter_process():
         )
         result = pipeline.process(job)
         output_path = Path(result.output_path) if result.output_path else None
+        download_token = None
+        if output_path and output_path.is_file():
+            download_token = uuid.uuid4().hex
+            _download_tokens[download_token] = str(output_path.resolve())
         return jsonify({
             "success": result.success,
             "filename": file.filename,
             "output_name": output_path.name if output_path else output_name,
             "output_path": str(output_path.resolve()) if output_path else "",
+            "download_token": download_token,
             "error": result.error or "",
         })
     except Exception as e:
@@ -125,6 +132,20 @@ def api_metadata_generate():
             os.unlink(image_path)
         except OSError:
             pass
+
+
+# ---------------------------------------------------------------------------
+# Download API — serve processed files for client-side save
+# ---------------------------------------------------------------------------
+
+_download_tokens: dict[str, str] = {}
+
+@app.route("/api/converter/download/<token>")
+def api_converter_download(token: str):
+    path = _download_tokens.pop(token, None)
+    if not path or not os.path.isfile(path):
+        return jsonify({"error": "File not found or expired"}), 404
+    return send_file(path, as_attachment=True)
 
 
 # ---------------------------------------------------------------------------

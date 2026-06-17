@@ -135,8 +135,8 @@ body { background-color: #09090b; color: #e7e0ed; }
           </div>
         </div>
       </div>
-      <div class="w-full lg:w-2/3 flex flex-col gap-md h-[500px] lg:h-auto">
-        <div class="surface-card rounded-lg p-md flex flex-col gap-md">
+      <div class="w-full lg:w-2/3 flex flex-col gap-md min-h-0">
+        <div class="surface-card rounded-lg p-md flex flex-col gap-md flex-shrink-0">
           <h3 class="font-h3 text-h3 text-on-surface">Conversion Settings</h3>
           <div class="flex gap-md">
             <label class="flex items-center gap-sm cursor-pointer group">
@@ -175,22 +175,25 @@ body { background-color: #09090b; color: #e7e0ed; }
             </div>
           </div>
           <div class="pt-sm border-t border-[#27272a]">
-            <label class="font-label-md text-label-md text-on-surface-variant block mb-xs">Output Folder</label>
+            <label class="font-label-md text-label-md text-on-surface-variant block mb-xs">Save To</label>
             <div class="flex gap-sm">
-              <input id="conv-output-dir" type="text" value="downloads/" class="flex-1 bg-background border border-surface-variant rounded-lg px-sm py-xs font-code text-code text-on-surface focus:ring-1 focus:ring-inverse-primary focus:border-inverse-primary outline-none transition-all">
-              <button id="conv-output-reset" class="px-md py-xs rounded-lg border border-surface-variant text-on-surface-variant hover:bg-surface-variant transition-colors font-label-md text-label-md shrink-0">Reset</button>
+              <input id="conv-output-dir" type="text" value="downloads/" placeholder="Server path (e.g. downloads/)" class="flex-1 bg-background border border-surface-variant rounded-lg px-sm py-xs font-code text-code text-on-surface focus:ring-1 focus:ring-inverse-primary focus:border-inverse-primary outline-none transition-all">
+              <button id="conv-browse-btn" class="flex items-center gap-xs px-md py-xs rounded-lg border border-surface-variant text-on-surface-variant hover:bg-surface-variant transition-colors font-label-md text-label-md shrink-0">
+                <span class="material-symbols-outlined text-[16px]">folder_open</span>
+                Browse
+              </button>
             </div>
-            <p class="font-label-md text-label-md text-on-surface-variant mt-xs">Files will be saved to this directory on the server</p>
+            <p class="font-label-md text-label-md text-on-surface-variant mt-xs">Pick a folder to save processed files. Uses File System Access API in supported browsers.</p>
           </div>
         </div>
-        <div class="surface-card rounded-lg flex flex-col flex-1 min-h-0">
-          <div class="p-md border-b border-[#27272a] bg-[#18181b] rounded-t-lg">
+        <div class="surface-card rounded-lg flex flex-col flex-1 min-h-0 overflow-hidden">
+          <div class="p-md border-b border-[#27272a] bg-[#18181b] flex-shrink-0">
             <h3 class="font-h3 text-h3 text-on-surface">Results</h3>
           </div>
-          <div id="conv-results" class="flex-1 overflow-y-auto p-sm flex flex-col gap-base">
+          <div id="conv-results" class="flex-1 overflow-y-auto p-sm flex flex-col gap-base min-h-0">
             <div class="flex items-center justify-center h-full text-on-surface-variant font-body-sm text-body-sm">No results yet</div>
           </div>
-          <div id="conv-progress" class="hidden p-md border-t border-[#27272a] bg-[#18181b] rounded-b-lg">
+          <div id="conv-progress" class="hidden p-md border-t border-[#27272a] bg-[#18181b] flex-shrink-0">
             <div class="flex justify-between items-center mb-sm">
               <span class="font-label-md text-label-md text-on-surface-variant">Processing Queue</span>
               <span id="conv-progress-text" class="font-code text-code text-on-surface">0 / 0 files processed</span>
@@ -201,6 +204,12 @@ body { background-color: #09090b; color: #e7e0ed; }
             <div class="flex justify-between items-center mt-xs">
               <span class="font-label-md text-label-md text-on-surface-variant" id="conv-progress-status">Preparing...</span>
               <span id="conv-progress-pct" class="font-label-md text-label-md text-inverse-primary font-bold">0%</span>
+            </div>
+            <div class="flex justify-end mt-sm pt-sm border-t border-[#27272a] hidden" id="conv-download-row">
+              <button id="conv-download-btn" class="flex items-center gap-xs px-md py-sm rounded-DEFAULT border border-[#27272a] text-on-surface hover:bg-surface-variant transition-colors font-label-md text-label-md">
+                <span class="material-symbols-outlined text-[16px]">download</span>
+                Download All to Folder
+              </button>
             </div>
           </div>
         </div>
@@ -243,17 +252,20 @@ body { background-color: #09090b; color: #e7e0ed; }
           <div id="meta-progress" class="hidden p-md border-t border-[#27272a] bg-[#18181b]">
             <div class="flex justify-between items-center">
               <span class="font-label-md text-label-md text-on-surface-variant">Progress</span>
-              <span id="meta-progress-count" class="font-label-md text-label-md text-primary">0 / 0</span>
+              <span class="flex items-center gap-sm">
+                <span id="meta-progress-count" class="font-label-md text-label-md text-primary">0 / 0</span>
+                <span id="meta-progress-pct" class="font-label-md text-label-md text-on-surface-variant">0%</span>
+              </span>
             </div>
-            <div class="w-full h-1 bg-[#27272a] rounded-full overflow-hidden mt-sm">
-              <div id="meta-progress-bar" class="h-full bg-primary w-0 transition-all duration-500"></div>
+            <div class="w-full h-2 bg-[#27272a] rounded-full overflow-hidden mt-sm">
+              <div id="meta-progress-bar" class="h-full bg-primary w-0 transition-all duration-500 rounded-full"></div>
             </div>
             <span id="meta-progress-file" class="font-code text-code text-on-surface-variant truncate text-[11px] mt-xs hidden"></span>
           </div>
         </div>
       </div>
-      <div class="w-full lg:w-2/3 flex flex-col gap-md h-[500px] lg:h-auto">
-        <div class="surface-card rounded-lg flex flex-col flex-1 min-h-0 relative">
+      <div class="w-full lg:w-2/3 flex flex-col gap-md min-h-0">
+        <div class="surface-card rounded-lg flex flex-col flex-1 min-h-0 overflow-hidden">
           <div class="p-md border-b border-[#27272a] flex justify-between items-center bg-[#18181b] z-10 sticky top-0 rounded-t-lg">
             <h2 class="font-h3 text-h3 text-on-surface flex items-center gap-xs">
               <span class="material-symbols-outlined text-[18px] text-primary">data_object</span>
@@ -316,11 +328,27 @@ const convProgressBar = document.getElementById('conv-progress-bar');
 const convProgressText = document.getElementById('conv-progress-text');
 const convProgressPct = document.getElementById('conv-progress-pct');
 const convProgressStatus = document.getElementById('conv-progress-status');
+const convDownloadRow = document.getElementById('conv-download-row');
+const convDownloadBtn = document.getElementById('conv-download-btn');
 const convOutputDir = document.getElementById('conv-output-dir');
-const convOutputReset = document.getElementById('conv-output-reset');
+const convBrowseBtn = document.getElementById('conv-browse-btn');
 let convFiles = [];
+let convDirHandle = null;
+let convDownloadTokens = [];
 
-convOutputReset.addEventListener('click', () => { convOutputDir.value = 'downloads/'; });
+convBrowseBtn.addEventListener('click', async () => {
+  if (typeof window.showDirectoryPicker === 'function') {
+    try {
+      const handle = await window.showDirectoryPicker({ mode: 'readwrite' });
+      convDirHandle = handle;
+      convOutputDir.value = handle.name;
+    } catch (e) {
+      if (e.name !== 'AbortError') convOutputDir.select();
+    }
+  } else {
+    convOutputDir.select();
+  }
+});
 
 convUpscaleToggle.addEventListener('change', () => {
   convUpscaleSettings.classList.toggle('hidden', !convUpscaleToggle.checked);
@@ -370,9 +398,11 @@ convProcessBtn.addEventListener('click', async () => {
   const scale = document.querySelector('.scale-btn.border-inverse-primary')?.dataset.scale || 2;
   const outputDir = convOutputDir.value.trim() || 'downloads/';
   convProgress.classList.remove('hidden');
+  convDownloadRow.classList.add('hidden');
   convResults.innerHTML = '';
   convProgressStatus.textContent = 'Processing...';
   const results = [];
+  convDownloadTokens = [];
   for (let i = 0; i < convFiles.length; i++) {
     const pct = Math.round(((i + 1) / convFiles.length) * 100);
     const f = convFiles[i];
@@ -391,6 +421,7 @@ convProcessBtn.addEventListener('click', async () => {
     const resp = await fetch('/api/converter/process', { method: 'POST', body: fd });
     const data = await resp.json();
     results.push(data);
+    if (data.download_token) convDownloadTokens.push(data.download_token);
     convResults.innerHTML = results.map(r =>
       `<div class="flex items-center justify-between p-sm rounded-lg bg-surface border border-surface-variant group">
         <div class="flex items-center gap-md overflow-hidden">
@@ -406,7 +437,40 @@ convProcessBtn.addEventListener('click', async () => {
   convProgressBar.style.width = '100%';
   convProgressPct.textContent = '100%';
   convProgressStatus.textContent = 'Complete';
+  if (convDownloadTokens.length > 0) convDownloadRow.classList.remove('hidden');
   setStatus(`Done — ${convFiles.length} file(s) processed`);
+});
+
+convDownloadBtn.addEventListener('click', async () => {
+  if (convDownloadTokens.length === 0) return;
+  if (convDirHandle && typeof convDirHandle.values === 'function') {
+    for (const tok of downloadTokens) {
+      const resp = await fetch(`/api/converter/download/${tok}`);
+      if (!resp.ok) continue;
+      const blob = await resp.blob();
+      const name = resp.headers.get('Content-Disposition')?.match(/filename="?(.+?)"?$/)?.[1] || `file_${tok.slice(0,8)}`;
+      try {
+        const fileHandle = await convDirHandle.getFileHandle(name, { create: true });
+        const writer = await fileHandle.createWritable();
+        await writer.write(blob);
+        await writer.close();
+      } catch (e) {
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = name;
+        a.click();
+        URL.revokeObjectURL(a.href);
+      }
+    }
+    setStatus(`Downloaded ${downloadTokens.length} file(s) to ${convDirHandle.name}`);
+  } else {
+    for (const tok of downloadTokens) {
+      const a = document.createElement('a');
+      a.href = `/api/converter/download/${tok}`;
+      a.download = '';
+      a.click();
+    }
+  }
 });
 
 // ===================== METADATA GENERATOR =====================
@@ -420,6 +484,7 @@ const metaDownloadBtn = document.getElementById('meta-download-btn');
 const metaProgress = document.getElementById('meta-progress');
 const metaProgressBar = document.getElementById('meta-progress-bar');
 const metaProgressCount = document.getElementById('meta-progress-count');
+const metaProgressPct = document.getElementById('meta-progress-pct');
 const metaProgressFile = document.getElementById('meta-progress-file');
 let metaFiles = [];
 let metaResultsData = [];
@@ -469,8 +534,10 @@ metaGenerateBtn.addEventListener('click', async () => {
 
   for (let i = 0; i < metaFiles.length; i++) {
     const f = metaFiles[i];
+    const metaPct = Math.round(((i+1)/metaFiles.length)*100);
     metaProgressCount.textContent = `${i+1} / ${metaFiles.length}`;
-    metaProgressBar.style.width = `${((i+1)/metaFiles.length)*100}%`;
+    metaProgressPct.textContent = `${metaPct}%`;
+    metaProgressBar.style.width = `${metaPct}%`;
     metaProgressFile.textContent = `Processing: ${f.name}`;
     setStatus(`Analyzing ${f.name} (${i+1}/${metaFiles.length})...`);
 
