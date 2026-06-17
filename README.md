@@ -92,11 +92,17 @@ backend/               # Business logic (no frontend code)
 ├── models.py          # ImageJob & JobResult dataclasses
 └── pipeline.py        # Processing orchestrator
 
-templates/
-└── index.html          # Single-page browser UI (dark theme, Tailwind)
+frontend/              # Flask web UI
+├── server.py          # Flask server (API routes)
+└── templates/
+    └── index.html     # Single-page browser UI (dark theme, Tailwind)
 
-server.py               # Flask server (API routes + static file serving)
-main.py                 # Entry point — launches Flask
+main.py                # Entry point — launches Flask
+
+resources/
+├── models/            # GGUF + Upscayl model files (gitignored)
+├── bins/              # Upscayl binaries (gitignored)
+└── skills/            # Zedge SEO skill (loaded into vector store)
 
 ## Tests
 
