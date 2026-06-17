@@ -34,3 +34,7 @@ Thumbs.db
 # Model files (too large for GitHub)
 resources/models/
 resources/bin/
+
+# Project docs (not for distribution)
+build_exe.bat
+model_comunication.md
