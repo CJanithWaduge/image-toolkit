@@ -1,5 +1,5 @@
 import webbrowser
-from server import app
+from frontend.server import app
 
 if __name__ == "__main__":
     print("Starting Image Toolkit...")

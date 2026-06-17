@@ -15,7 +15,9 @@ from backend.upscaler import Upscaler
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-app = Flask(__name__)
+_TEMPLATE_DIR = Path(__file__).resolve().parent / "templates"
+
+app = Flask(__name__, template_folder=str(_TEMPLATE_DIR))
 app.config["MAX_CONTENT_LENGTH"] = 50 * 1024 * 1024  # 50 MB
 
 # Backend instances
@@ -125,10 +127,3 @@ def api_metadata_generate():
 @app.route("/api/health")
 def api_health():
     return jsonify({"status": "ok"})
-
-
-if __name__ == "__main__":
-    import sys
-    port = int(os.environ.get("PORT", "8000"))
-    logger.info("Starting server on http://127.0.0.1:%d", port)
-    app.run(host="127.0.0.1", port=port, debug=True)
