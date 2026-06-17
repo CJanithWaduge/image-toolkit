@@ -38,3 +38,6 @@ resources/bin/
 # Project docs (not for distribution)
 build_exe.bat
 model_comunication.md
+
+# Stitch AI design source files
+stitch_image_toolkit_ui/
