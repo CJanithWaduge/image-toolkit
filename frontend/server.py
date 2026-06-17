@@ -47,9 +47,6 @@ def api_converter_process():
         return jsonify({"success": False, "error": "No file provided"}), 400
 
     direction = request.form.get("direction", "png2jpeg")
-    enable_upscale = request.form.get("upscale", "false").lower() == "true"
-    model = request.form.get("model", "remacri-4x")
-    scale = int(request.form.get("scale", "2"))
     user_output_dir = request.form.get("output_dir", "").strip()
 
     mode = ConversionMode.PNG_TO_JPEG if direction == "png2jpeg" else ConversionMode.JPEG_TO_PNG
@@ -69,9 +66,6 @@ def api_converter_process():
             output_dir=output_dir,
             output_name=output_name,
             mode=mode.value,
-            upscale_enabled=enable_upscale,
-            upscale_model=model,
-            upscale_scale=scale,
         )
         result = pipeline.process(job)
         output_path = Path(result.output_path) if result.output_path else None
@@ -90,6 +84,58 @@ def api_converter_process():
     except Exception as e:
         logger.exception("Conversion failed")
         return jsonify({"success": False, "filename": file.filename, "error": str(e)})
+
+
+# ---------------------------------------------------------------------------
+# Upscaler API
+# ---------------------------------------------------------------------------
+
+@app.route("/api/upscaler/process", methods=["POST"])
+def api_upscaler_process():
+    file = request.files.get("image")
+    if not file:
+        return jsonify({"success": False, "error": "No file provided"}), 400
+
+    model = request.form.get("model", "remacri-4x")
+    scale = int(request.form.get("scale", "2"))
+    user_output_dir = request.form.get("output_dir", "").strip()
+
+    suffix = Path(file.filename).suffix
+    if user_output_dir:
+        output_dir = os.path.abspath(user_output_dir)
+        os.makedirs(output_dir, exist_ok=True)
+    else:
+        output_dir = tempfile.mkdtemp()
+    output_name = f"{Path(file.filename).stem}_{uuid.uuid4().hex[:8]}"
+    input_path = os.path.join(output_dir, f"input{suffix}")
+    output_path = os.path.join(output_dir, f"{output_name}{suffix}")
+
+    try:
+        file.save(input_path)
+        upscaler.model = model
+        upscaler.scale = scale
+        upscaler.upscale(input_path, output_path)
+        download_token = uuid.uuid4().hex
+        _download_tokens[download_token] = output_path
+        return jsonify({
+            "success": True,
+            "filename": file.filename,
+            "output_name": Path(output_path).name,
+            "output_path": output_path,
+            "download_token": download_token,
+            "error": "",
+        })
+    except Exception as e:
+        logger.exception("Upscaling failed")
+        return jsonify({"success": False, "filename": file.filename, "error": str(e)})
+
+
+@app.route("/api/upscaler/download/<token>")
+def api_upscaler_download(token: str):
+    path = _download_tokens.pop(token, None)
+    if not path or not os.path.isfile(path):
+        return jsonify({"error": "File not found or expired"}), 404
+    return send_file(path, as_attachment=True)
 
 
 # ---------------------------------------------------------------------------

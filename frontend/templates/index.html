@@ -108,6 +108,10 @@ tailwind.config = {
       <span class="material-symbols-outlined">transform</span>
       <span class="font-label-md text-label-md">Converter</span>
     </a>
+    <a class="tab-link flex items-center gap-sm px-sm py-sm rounded-lg text-on-surface-variant hover:bg-surface-variant transition-all duration-150" data-tab="upscaler" href="#">
+      <span class="material-symbols-outlined">auto_fix_high</span>
+      <span class="font-label-md text-label-md">Upscaler</span>
+    </a>
     <a class="tab-link flex items-center gap-sm px-sm py-sm rounded-lg text-on-surface-variant hover:bg-surface-variant transition-all duration-150" data-tab="metadata" href="#">
       <span class="material-symbols-outlined">description</span>
       <span class="font-label-md text-label-md">Metadata Generator</span>
@@ -132,12 +136,12 @@ tailwind.config = {
   </header>
 
   <!-- ===================== PAGE: CONVERTER ===================== -->
-  <div id="page-converter" class="flex-1 overflow-y-auto p-lg pb-xl space-y-md">
+  <div id="page-converter" class="page-content flex-1 overflow-y-auto p-lg pb-xl space-y-md">
     <!-- Header Action Card -->
     <div class="bg-surface-container-low border border-surface-variant rounded-xl p-md flex flex-col md:flex-row justify-between items-start md:items-center gap-md shadow-sm">
       <div>
         <h1 class="font-h1 text-h1 text-on-surface">Image Converter</h1>
-        <p class="font-body-md text-body-md text-on-surface-variant mt-base">Batch convert and upscale your images.</p>
+        <p class="font-body-md text-body-md text-on-surface-variant mt-base">Convert images between PNG and JPEG formats.</p>
       </div>
       <div class="flex items-center gap-sm w-full md:w-auto">
         <button id="conv-select-btn" class="flex-1 md:flex-none px-md py-sm rounded-lg border border-surface-variant text-on-surface font-label-md text-label-md hover:bg-surface transition-colors">
@@ -166,59 +170,27 @@ tailwind.config = {
 
       <!-- Right Column -->
       <div class="lg:col-span-2 space-y-md flex flex-col">
-        <!-- Settings Grid -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-md shrink-0">
-          <!-- Conversion Settings -->
-          <div class="bg-surface-container-low border border-surface-variant rounded-xl p-md space-y-md">
-            <h3 class="font-h3 text-h3 text-on-surface">Conversion Settings</h3>
-            <div class="space-y-sm">
-              <label class="flex items-center gap-sm cursor-pointer group">
-                <input type="radio" name="conv-direction" value="png2jpeg" checked class="w-4 h-4 text-inverse-primary bg-background border-surface-variant focus:ring-inverse-primary focus:ring-offset-background">
-                <span class="font-body-md text-body-md text-on-surface group-hover:text-primary transition-colors">PNG → JPEG</span>
-              </label>
-              <label class="flex items-center gap-sm cursor-pointer group">
-                <input type="radio" name="conv-direction" value="jpeg2png" class="w-4 h-4 text-inverse-primary bg-background border-surface-variant focus:ring-inverse-primary focus:ring-offset-background">
-                <span class="font-body-md text-body-md text-on-surface group-hover:text-primary transition-colors">JPEG → PNG</span>
-              </label>
-            </div>
-            <div class="pt-sm border-t border-surface-variant">
-              <label class="flex items-center gap-sm cursor-pointer group">
-                <input id="conv-upscale-toggle" type="checkbox" class="w-4 h-4 rounded text-inverse-primary bg-background border-surface-variant focus:ring-inverse-primary focus:ring-offset-background">
-                <span class="font-body-md text-body-md text-on-surface group-hover:text-primary transition-colors">Enable AI Upscaling</span>
-              </label>
-            </div>
-            <div class="pt-sm border-t border-surface-variant">
-              <label class="font-label-md text-label-md text-on-surface-variant block mb-xs">Save To</label>
-              <div class="flex gap-sm">
-                <input id="conv-output-dir" type="text" value="" placeholder="Server path (leave empty for temp)" class="flex-1 bg-background border border-surface-variant rounded-lg px-sm py-xs font-code text-code text-on-surface focus:ring-1 focus:ring-inverse-primary focus:border-inverse-primary outline-none transition-all">
-                <button id="conv-browse-btn" class="flex items-center gap-xs px-md py-xs rounded-lg border border-surface-variant text-on-surface-variant hover:bg-surface transition-colors font-label-md text-label-md shrink-0">
-                  <span class="material-symbols-outlined text-[16px]">folder_open</span>
-                  Browse
-                </button>
-              </div>
-            </div>
+        <!-- Conversion Settings -->
+        <div class="bg-surface-container-low border border-surface-variant rounded-xl p-md space-y-md shrink-0">
+          <h3 class="font-h3 text-h3 text-on-surface">Conversion Settings</h3>
+          <div class="space-y-sm">
+            <label class="flex items-center gap-sm cursor-pointer group">
+              <input type="radio" name="conv-direction" value="png2jpeg" checked class="w-4 h-4 text-inverse-primary bg-background border-surface-variant focus:ring-inverse-primary focus:ring-offset-background">
+              <span class="font-body-md text-body-md text-on-surface group-hover:text-primary transition-colors">PNG → JPEG</span>
+            </label>
+            <label class="flex items-center gap-sm cursor-pointer group">
+              <input type="radio" name="conv-direction" value="jpeg2png" class="w-4 h-4 text-inverse-primary bg-background border-surface-variant focus:ring-inverse-primary focus:ring-offset-background">
+              <span class="font-body-md text-body-md text-on-surface group-hover:text-primary transition-colors">JPEG → PNG</span>
+            </label>
           </div>
-
-          <!-- Upscaling Settings -->
-          <div id="conv-upscale-settings" class="bg-surface-container-low border border-surface-variant rounded-xl p-md space-y-md hidden">
-            <h3 class="font-h3 text-h3 text-on-surface">Upscaling Settings</h3>
-            <div class="space-y-xs">
-              <label class="font-label-md text-label-md text-on-surface-variant block">Model</label>
-              <select id="conv-upscale-model" class="w-full bg-background border border-surface-variant rounded-lg px-sm py-xs font-body-md text-body-md text-on-surface focus:ring-1 focus:ring-inverse-primary focus:border-inverse-primary outline-none transition-all">
-                <option value="remacri-4x">remacri-4x</option>
-                <option value="ultrasharp-4x">ultrasharp-4x</option>
-                <option value="high-fidelity-4x">high-fidelity-4x</option>
-                <option value="digital-art-4x">digital-art-4x</option>
-                <option value="ultramix-balanced-4x">ultramix-balanced-4x</option>
-              </select>
-            </div>
-            <div class="space-y-xs">
-              <label class="font-label-md text-label-md text-on-surface-variant block">Scale</label>
-              <div class="flex gap-sm">
-                <button class="scale-btn px-md py-xs rounded-full border border-inverse-primary bg-inverse-primary/10 text-inverse-primary font-label-md text-label-md transition-colors" data-scale="2">2x</button>
-                <button class="scale-btn px-md py-xs rounded-full border border-surface-variant bg-transparent text-on-surface-variant hover:border-outline-variant font-label-md text-label-md transition-colors" data-scale="3">3x</button>
-                <button class="scale-btn px-md py-xs rounded-full border border-surface-variant bg-transparent text-on-surface-variant hover:border-outline-variant font-label-md text-label-md transition-colors" data-scale="4">4x</button>
-              </div>
+          <div class="pt-sm border-t border-surface-variant">
+            <label class="font-label-md text-label-md text-on-surface-variant block mb-xs">Save To</label>
+            <div class="flex gap-sm">
+              <input id="conv-output-dir" type="text" value="" placeholder="Server path (leave empty for temp)" class="flex-1 bg-background border border-surface-variant rounded-lg px-sm py-xs font-code text-code text-on-surface focus:ring-1 focus:ring-inverse-primary focus:border-inverse-primary outline-none transition-all">
+              <button id="conv-browse-btn" class="flex items-center gap-xs px-md py-xs rounded-lg border border-surface-variant text-on-surface-variant hover:bg-surface transition-colors font-label-md text-label-md shrink-0">
+                <span class="material-symbols-outlined text-[16px]">folder_open</span>
+                Browse
+              </button>
             </div>
           </div>
         </div>
@@ -231,7 +203,6 @@ tailwind.config = {
           <div id="conv-results" class="flex-1 overflow-y-auto p-sm space-y-base">
             <div class="flex items-center justify-center h-full text-on-surface-variant font-body-sm text-body-sm">No results yet</div>
           </div>
-          <!-- Progress Bar Footer -->
           <div id="conv-progress" class="hidden p-md border-t border-surface-variant bg-surface-container shrink-0 rounded-b-xl">
             <div class="flex justify-between items-center mb-sm">
               <span class="font-label-md text-label-md text-on-surface-variant">Processing Queue</span>
@@ -250,8 +221,96 @@ tailwind.config = {
     </div>
   </div>
 
+  <!-- ===================== PAGE: UPSCALER ===================== -->
+  <div id="page-upscaler" class="page-content flex-1 overflow-y-auto p-lg pb-xl space-y-md hidden">
+    <div class="bg-surface-container-low border border-surface-variant rounded-xl p-md flex flex-col md:flex-row justify-between items-start md:items-center gap-md shadow-sm">
+      <div>
+        <h1 class="font-h1 text-h1 text-on-surface">AI Upscaler</h1>
+        <p class="font-body-md text-body-md text-on-surface-variant mt-base">Upscale images using AI models.</p>
+      </div>
+      <div class="flex items-center gap-sm w-full md:w-auto">
+        <button id="ups-select-btn" class="flex-1 md:flex-none px-md py-sm rounded-lg border border-surface-variant text-on-surface font-label-md text-label-md hover:bg-surface transition-colors">
+          Select Images
+        </button>
+        <button id="ups-process-btn" class="flex-1 md:flex-none px-md py-sm rounded-lg bg-inverse-primary text-white font-label-md text-label-md hover:opacity-90 transition-opacity flex items-center justify-center gap-sm">
+          <span class="material-symbols-outlined text-[18px]">auto_fix_high</span>
+          Upscale
+        </button>
+      </div>
+    </div>
+    <input id="ups-file-input" type="file" accept=".png,.jpg,.jpeg,.webp,.bmp" multiple class="hidden">
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-md">
+      <div class="lg:col-span-1 bg-surface-container-low border border-surface-variant rounded-xl flex flex-col h-[500px]">
+        <div class="p-md border-b border-surface-variant flex justify-between items-center shrink-0">
+          <h3 class="font-h3 text-h3 text-on-surface">Selected Files</h3>
+          <button id="ups-clear-btn" class="font-label-md text-label-md text-primary hover:text-primary-fixed transition-colors">Clear All</button>
+        </div>
+        <div id="ups-file-list" class="flex-1 overflow-y-auto p-sm space-y-base">
+          <div class="flex items-center justify-center h-full text-on-surface-variant font-body-sm text-body-sm">No files selected</div>
+        </div>
+      </div>
+
+      <div class="lg:col-span-2 space-y-md flex flex-col">
+        <div class="bg-surface-container-low border border-surface-variant rounded-xl p-md space-y-md shrink-0">
+          <h3 class="font-h3 text-h3 text-on-surface">Upscaling Settings</h3>
+          <div class="space-y-xs">
+            <label class="font-label-md text-label-md text-on-surface-variant block">Model</label>
+            <select id="ups-model" class="w-full bg-background border border-surface-variant rounded-lg px-sm py-xs font-body-md text-body-md text-on-surface focus:ring-1 focus:ring-inverse-primary focus:border-inverse-primary outline-none transition-all">
+              <option value="remacri-4x">remacri-4x</option>
+              <option value="ultrasharp-4x">ultrasharp-4x</option>
+              <option value="high-fidelity-4x">high-fidelity-4x</option>
+              <option value="digital-art-4x">digital-art-4x</option>
+              <option value="ultramix-balanced-4x">ultramix-balanced-4x</option>
+            </select>
+          </div>
+          <div class="space-y-xs">
+            <label class="font-label-md text-label-md text-on-surface-variant block">Scale</label>
+            <div class="flex gap-sm">
+              <button class="ups-scale-btn px-md py-xs rounded-full border border-inverse-primary bg-inverse-primary/10 text-inverse-primary font-label-md text-label-md transition-colors" data-scale="2">2x</button>
+              <button class="ups-scale-btn px-md py-xs rounded-full border border-surface-variant bg-transparent text-on-surface-variant hover:border-outline-variant font-label-md text-label-md transition-colors" data-scale="3">3x</button>
+              <button class="ups-scale-btn px-md py-xs rounded-full border border-surface-variant bg-transparent text-on-surface-variant hover:border-outline-variant font-label-md text-label-md transition-colors" data-scale="4">4x</button>
+            </div>
+          </div>
+          <div class="pt-sm border-t border-surface-variant">
+            <label class="font-label-md text-label-md text-on-surface-variant block mb-xs">Save To</label>
+            <div class="flex gap-sm">
+              <input id="ups-output-dir" type="text" value="" placeholder="Server path (leave empty for temp)" class="flex-1 bg-background border border-surface-variant rounded-lg px-sm py-xs font-code text-code text-on-surface focus:ring-1 focus:ring-inverse-primary focus:border-inverse-primary outline-none transition-all">
+              <button id="ups-browse-btn" class="flex items-center gap-xs px-md py-xs rounded-lg border border-surface-variant text-on-surface-variant hover:bg-surface transition-colors font-label-md text-label-md shrink-0">
+                <span class="material-symbols-outlined text-[16px]">folder_open</span>
+                Browse
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-surface-container-low border border-surface-variant rounded-xl flex flex-col flex-1 min-h-[200px]">
+          <div class="p-md border-b border-surface-variant shrink-0">
+            <h3 class="font-h3 text-h3 text-on-surface">Results</h3>
+          </div>
+          <div id="ups-results" class="flex-1 overflow-y-auto p-sm space-y-base">
+            <div class="flex items-center justify-center h-full text-on-surface-variant font-body-sm text-body-sm">No results yet</div>
+          </div>
+          <div id="ups-progress" class="hidden p-md border-t border-surface-variant bg-surface-container shrink-0 rounded-b-xl">
+            <div class="flex justify-between items-center mb-sm">
+              <span class="font-label-md text-label-md text-on-surface-variant">Processing Queue</span>
+              <span id="ups-progress-text" class="font-code text-code text-on-surface">0 / 0 files processed</span>
+            </div>
+            <div class="w-full h-2 bg-background rounded-full overflow-hidden border border-surface-variant">
+              <div id="ups-progress-bar" class="h-full bg-inverse-primary w-0 transition-all duration-500 rounded-full"></div>
+            </div>
+            <div class="flex justify-between items-center mt-xs">
+              <span id="ups-progress-status" class="font-label-md text-label-md text-on-surface-variant">Preparing...</span>
+              <span id="ups-progress-pct" class="font-label-md text-label-md text-inverse-primary font-bold">0%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- ===================== PAGE: METADATA GENERATOR ===================== -->
-  <div id="page-metadata" class="flex-1 overflow-y-auto p-lg pb-xl space-y-md hidden">
+  <div id="page-metadata" class="page-content flex-1 overflow-y-auto p-lg pb-xl space-y-md hidden">
     <div class="bg-surface-container-low border border-surface-variant rounded-xl p-md flex flex-col md:flex-row justify-between items-start md:items-center gap-md shadow-sm">
       <div>
         <h1 class="font-h1 text-h1 text-on-surface">Metadata Generator</h1>
@@ -332,8 +391,7 @@ document.querySelectorAll('.tab-link').forEach(a => {
     });
     a.classList.remove('text-on-surface-variant');
     a.classList.add('bg-secondary-container', 'text-on-secondary-container', 'font-bold');
-    document.getElementById('page-converter').classList.add('hidden');
-    document.getElementById('page-metadata').classList.add('hidden');
+    document.querySelectorAll('.page-content').forEach(p => p.classList.add('hidden'));
     document.getElementById('page-' + a.dataset.tab).classList.remove('hidden');
   });
 });
@@ -362,8 +420,6 @@ const convFileList = document.getElementById('conv-file-list');
 const convClearBtn = document.getElementById('conv-clear-btn');
 const convProcessBtn = document.getElementById('conv-process-btn');
 const convSelectBtn = document.getElementById('conv-select-btn');
-const convUpscaleToggle = document.getElementById('conv-upscale-toggle');
-const convUpscaleSettings = document.getElementById('conv-upscale-settings');
 const convResults = document.getElementById('conv-results');
 const convProgress = document.getElementById('conv-progress');
 const convProgressBar = document.getElementById('conv-progress-bar');
@@ -390,21 +446,6 @@ convBrowseBtn.addEventListener('click', async () => {
   }
 });
 
-convUpscaleToggle.addEventListener('change', () => {
-  convUpscaleSettings.classList.toggle('hidden', !convUpscaleToggle.checked);
-});
-
-document.querySelectorAll('.scale-btn').forEach(btn => {
-  btn.addEventListener('click', () => {
-    document.querySelectorAll('.scale-btn').forEach(b => {
-      b.classList.remove('border-inverse-primary', 'bg-inverse-primary/10', 'text-inverse-primary');
-      b.classList.add('border-surface-variant', 'bg-transparent', 'text-on-surface-variant');
-    });
-    btn.classList.remove('border-surface-variant', 'bg-transparent', 'text-on-surface-variant');
-    btn.classList.add('border-inverse-primary', 'bg-inverse-primary/10', 'text-inverse-primary');
-  });
-});
-
 convSelectBtn.addEventListener('click', () => convFileInput.click());
 convFileInput.addEventListener('change', () => {
   convFiles = Array.from(convFileInput.files);
@@ -417,7 +458,7 @@ function renderConvFileList() {
     convFileList.innerHTML = '<div class="flex items-center justify-center h-full text-on-surface-variant font-body-sm text-body-sm">No files selected</div>';
     return;
   }
-  convFileList.innerHTML = convFiles.map((f, i) =>
+  convFileList.innerHTML = convFiles.map((f) =>
     `<div class="flex items-center justify-between p-sm rounded-lg hover:bg-surface transition-colors group cursor-default border border-transparent hover:border-surface-variant">
       <div class="flex items-center gap-sm overflow-hidden">
         <span class="material-symbols-outlined text-on-surface-variant text-[18px]">image</span>
@@ -433,9 +474,6 @@ convClearBtn.addEventListener('click', () => { convFiles = []; renderConvFileLis
 convProcessBtn.addEventListener('click', async () => {
   if (convFiles.length === 0) { setStatus('No files selected'); return; }
   const direction = document.querySelector('input[name="conv-direction"]:checked').value;
-  const upscale = convUpscaleToggle.checked;
-  const model = document.getElementById('conv-upscale-model').value;
-  const scale = document.querySelector('.scale-btn.border-inverse-primary')?.dataset.scale || 2;
   convProgress.classList.remove('hidden');
   convResults.innerHTML = '';
   convProgressStatus.textContent = 'Processing...';
@@ -452,15 +490,11 @@ convProcessBtn.addEventListener('click', async () => {
     const fd = new FormData();
     fd.append('image', f);
     fd.append('direction', direction);
-    fd.append('upscale', upscale);
-    fd.append('model', model);
-    fd.append('scale', scale);
     fd.append('output_dir', convOutputDir.value.trim());
     const resp = await fetch('/api/converter/process', { method: 'POST', body: fd });
     const data = await resp.json();
     results.push(data);
     if (data.download_token) convDownloadTokens.push(data.download_token);
-    const actionLabel = upscale ? 'Upscaled' : 'Converted';
     convResults.innerHTML = results.map(r => {
       const idx = results.indexOf(r);
       const token = convDownloadTokens[idx] || '';
@@ -469,7 +503,7 @@ convProcessBtn.addEventListener('click', async () => {
           <span class="material-symbols-outlined ${r.success ? 'text-[#4ade80]' : 'text-error'} text-[18px]">${r.success ? 'check_circle' : 'error'}</span>
           <div class="flex flex-col">
             <span class="font-code text-code text-on-surface truncate">${r.output_name || r.filename}</span>
-            <span class="font-label-md text-label-md text-on-surface-variant">${r.success ? actionLabel : r.error}</span>
+            <span class="font-label-md text-label-md text-on-surface-variant">${r.success ? 'Converted' : r.error}</span>
           </div>
         </div>
         ${token ? `<button class="download-file p-xs rounded bg-surface-variant text-on-surface hover:bg-outline-variant transition-colors" data-token="${token}" title="Download">
@@ -482,14 +516,141 @@ convProcessBtn.addEventListener('click', async () => {
   convProgressPct.textContent = '100%';
   convProgressStatus.textContent = 'All files processed successfully';
   setStatus(`Done — ${convFiles.length} file(s) processed`);
-  showToast(`Completed — ${convFiles.length} file(s) ${upscale ? 'upscaled' : 'converted'}`);
+  showToast(`Completed — ${convFiles.length} file(s) converted`);
 
-  // Wire per-file download buttons
   document.querySelectorAll('.download-file').forEach(btn => {
     btn.addEventListener('click', async () => {
       const tok = btn.dataset.token;
       const a = document.createElement('a');
       a.href = `/api/converter/download/${tok}`;
+      a.download = '';
+      a.click();
+    });
+  });
+});
+
+// ===================== UPSCALER =====================
+const upsFileInput = document.getElementById('ups-file-input');
+const upsFileList = document.getElementById('ups-file-list');
+const upsClearBtn = document.getElementById('ups-clear-btn');
+const upsProcessBtn = document.getElementById('ups-process-btn');
+const upsSelectBtn = document.getElementById('ups-select-btn');
+const upsResults = document.getElementById('ups-results');
+const upsProgress = document.getElementById('ups-progress');
+const upsProgressBar = document.getElementById('ups-progress-bar');
+const upsProgressText = document.getElementById('ups-progress-text');
+const upsProgressPct = document.getElementById('ups-progress-pct');
+const upsProgressStatus = document.getElementById('ups-progress-status');
+const upsOutputDir = document.getElementById('ups-output-dir');
+const upsBrowseBtn = document.getElementById('ups-browse-btn');
+let upsFiles = [];
+let upsDirHandle = null;
+let upsDownloadTokens = [];
+
+upsBrowseBtn.addEventListener('click', async () => {
+  if (typeof window.showDirectoryPicker === 'function') {
+    try {
+      const handle = await window.showDirectoryPicker({ mode: 'readwrite' });
+      upsDirHandle = handle;
+      upsOutputDir.value = handle.name;
+    } catch (e) {
+      if (e.name !== 'AbortError') upsOutputDir.select();
+    }
+  } else {
+    upsOutputDir.select();
+  }
+});
+
+document.querySelectorAll('.ups-scale-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.ups-scale-btn').forEach(b => {
+      b.classList.remove('border-inverse-primary', 'bg-inverse-primary/10', 'text-inverse-primary');
+      b.classList.add('border-surface-variant', 'bg-transparent', 'text-on-surface-variant');
+    });
+    btn.classList.remove('border-surface-variant', 'bg-transparent', 'text-on-surface-variant');
+    btn.classList.add('border-inverse-primary', 'bg-inverse-primary/10', 'text-inverse-primary');
+  });
+});
+
+upsSelectBtn.addEventListener('click', () => upsFileInput.click());
+upsFileInput.addEventListener('change', () => {
+  upsFiles = Array.from(upsFileInput.files);
+  renderUpsFileList();
+  upsFileInput.value = '';
+});
+
+function renderUpsFileList() {
+  if (upsFiles.length === 0) {
+    upsFileList.innerHTML = '<div class="flex items-center justify-center h-full text-on-surface-variant font-body-sm text-body-sm">No files selected</div>';
+    return;
+  }
+  upsFileList.innerHTML = upsFiles.map((f) =>
+    `<div class="flex items-center justify-between p-sm rounded-lg hover:bg-surface transition-colors group cursor-default border border-transparent hover:border-surface-variant">
+      <div class="flex items-center gap-sm overflow-hidden">
+        <span class="material-symbols-outlined text-on-surface-variant text-[18px]">image</span>
+        <span class="font-code text-code text-on-surface truncate max-w-[150px]">${f.name}</span>
+      </div>
+      <span class="font-label-md text-label-md text-on-surface-variant shrink-0">${(f.size / 1024).toFixed(1)} KB</span>
+    </div>`
+  ).join('');
+}
+
+upsClearBtn.addEventListener('click', () => { upsFiles = []; renderUpsFileList(); });
+
+upsProcessBtn.addEventListener('click', async () => {
+  if (upsFiles.length === 0) { setStatus('No files selected'); return; }
+  const model = document.getElementById('ups-model').value;
+  const scale = document.querySelector('.ups-scale-btn.border-inverse-primary')?.dataset.scale || 2;
+  upsProgress.classList.remove('hidden');
+  upsResults.innerHTML = '';
+  upsProgressStatus.textContent = 'Processing...';
+  const results = [];
+  upsDownloadTokens = [];
+  for (let i = 0; i < upsFiles.length; i++) {
+    const pct = Math.round(((i + 1) / upsFiles.length) * 100);
+    const f = upsFiles[i];
+    setStatus(`Upscaling ${f.name} (${i+1}/${upsFiles.length})...`);
+    upsProgressText.textContent = `${i+1} / ${upsFiles.length} files processed`;
+    upsProgressBar.style.width = `${pct}%`;
+    upsProgressPct.textContent = `${pct}%`;
+    upsProgressStatus.textContent = `${f.name} (${i+1}/${upsFiles.length})`;
+    const fd = new FormData();
+    fd.append('image', f);
+    fd.append('model', model);
+    fd.append('scale', scale);
+    fd.append('output_dir', upsOutputDir.value.trim());
+    const resp = await fetch('/api/upscaler/process', { method: 'POST', body: fd });
+    const data = await resp.json();
+    results.push(data);
+    if (data.download_token) upsDownloadTokens.push(data.download_token);
+    upsResults.innerHTML = results.map(r => {
+      const idx = results.indexOf(r);
+      const token = upsDownloadTokens[idx] || '';
+      return `<div class="flex items-center justify-between p-sm rounded-lg bg-surface border border-surface-variant group">
+        <div class="flex items-center gap-md overflow-hidden">
+          <span class="material-symbols-outlined ${r.success ? 'text-[#4ade80]' : 'text-error'} text-[18px]">${r.success ? 'check_circle' : 'error'}</span>
+          <div class="flex flex-col">
+            <span class="font-code text-code text-on-surface truncate">${r.output_name || r.filename}</span>
+            <span class="font-label-md text-label-md text-on-surface-variant">${r.success ? 'Upscaled' : r.error}</span>
+          </div>
+        </div>
+        ${token ? `<button class="ups-download-file p-xs rounded bg-surface-variant text-on-surface hover:bg-outline-variant transition-colors" data-token="${token}" title="Download">
+          <span class="material-symbols-outlined text-[18px]">download</span>
+        </button>` : '<div class="w-8 h-8"></div>'}
+      </div>`;
+    }).join('');
+  }
+  upsProgressBar.style.width = '100%';
+  upsProgressPct.textContent = '100%';
+  upsProgressStatus.textContent = 'All files upscaled successfully';
+  setStatus(`Done — ${upsFiles.length} file(s) upscaled`);
+  showToast(`Completed — ${upsFiles.length} file(s) upscaled`);
+
+  document.querySelectorAll('.ups-download-file').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const tok = btn.dataset.token;
+      const a = document.createElement('a');
+      a.href = `/api/upscaler/download/${tok}`;
       a.download = '';
       a.click();
     });
