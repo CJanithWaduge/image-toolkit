@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Image Toolkit - Converter</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container": "#211e27",
+                        "primary-fixed": "#e9ddff",
+                        "surface-tint": "#d0bcff",
+                        "on-tertiary": "#482900",
+                        "outline": "#958ea0",
+                        "inverse-primary": "#6d3bd7",
+                        "on-primary": "#3c0091",
+                        "surface-container-lowest": "#0f0d15",
+                        "tertiary": "#ffb869",
+                        "error-container": "#93000a",
+                        "primary-fixed-dim": "#d0bcff",
+                        "tertiary-container": "#ca801e",
+                        "surface": "#15121b",
+                        "on-surface-variant": "#cbc3d7",
+                        "outline-variant": "#494454",
+                        "secondary-fixed-dim": "#c8c5ca",
+                        "secondary": "#c8c5ca",
+                        "on-tertiary-container": "#3f2300",
+                        "on-background": "#e7e0ed",
+                        "background": "#15121b",
+                        "surface-container-highest": "#37333d",
+                        "secondary-container": "#47464a",
+                        "on-tertiary-fixed-variant": "#673d00",
+                        "on-secondary": "#303033",
+                        "on-error-container": "#ffdad6",
+                        "tertiary-fixed-dim": "#ffb869",
+                        "surface-variant": "#37333d",
+                        "primary": "#d0bcff",
+                        "error": "#ffb4ab",
+                        "on-primary-fixed-variant": "#5516be",
+                        "inverse-on-surface": "#322f39",
+                        "on-error": "#690005",
+                        "primary-container": "#a078ff",
+                        "secondary-fixed": "#e4e1e6",
+                        "surface-bright": "#3b3742",
+                        "surface-container-low": "#1d1a23",
+                        "surface-dim": "#15121b",
+                        "tertiary-fixed": "#ffdcbb",
+                        "surface-container-high": "#2c2832",
+                        "on-secondary-fixed-variant": "#47464a",
+                        "on-tertiary-fixed": "#2c1700",
+                        "on-secondary-container": "#b6b4b8",
+                        "on-primary-container": "#340080",
+                        "on-primary-fixed": "#23005c",
+                        "on-surface": "#e7e0ed",
+                        "on-secondary-fixed": "#1b1b1e",
+                        "inverse-surface": "#e7e0ed"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "md": "1rem",
+                        "xs": "0.25rem",
+                        "lg": "1.5rem",
+                        "base": "4px",
+                        "xl": "2rem",
+                        "sm": "0.5rem",
+                        "gutter": "1rem",
+                        "container-margin": "1.5rem"
+                    },
+                    "fontFamily": {
+                        "body-md": ["Geist"],
+                        "label-md": ["Geist"],
+                        "body-lg": ["Geist"],
+                        "h3": ["Geist"],
+                        "h2": ["Geist"],
+                        "code": ["JetBrains Mono"],
+                        "body-sm": ["Geist"],
+                        "display": ["Geist"],
+                        "h1": ["Geist"]
+                    },
+                    "fontSize": {
+                        "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "label-md": ["12px", {"lineHeight": "16px", "fontWeight": "500"}],
+                        "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "h3": ["16px", {"lineHeight": "24px", "fontWeight": "600"}],
+                        "h2": ["20px", {"lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "code": ["13px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "body-sm": ["13px", {"lineHeight": "18px", "fontWeight": "400"}],
+                        "display": ["30px", {"lineHeight": "36px", "letterSpacing": "-0.02em", "fontWeight": "600"}],
+                        "h1": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.015em", "fontWeight": "600"}]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #37333d; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #494454; }
+    </style>
+</head>
+<body class="bg-background text-on-surface h-screen w-full overflow-hidden flex font-body-md text-body-md">
+<!-- SideNavBar -->
+<aside class="bg-surface-container-low dark:bg-surface-container-low docked left-0 h-full w-64 border-r border-outline-variant flat no shadows flex flex-col w-[240px] h-full hidden md:flex shrink-0">
+<div class="p-md border-b border-outline-variant flex items-center gap-sm">
+<div class="w-8 h-8 rounded-lg bg-surface-variant flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-primary text-[20px]">image</span>
+</div>
+<div class="flex flex-col">
+<span class="font-h3 text-h3 text-primary truncate">Toolkit</span>
+<span class="font-label-md text-label-md text-on-surface-variant">V1.0</span>
+</div>
+</div>
+<nav class="flex-1 py-md flex flex-col gap-base px-sm overflow-y-auto">
+<!-- Active Tab: Converter -->
+<a class="flex items-center gap-sm px-sm py-sm rounded-lg bg-secondary-container text-on-secondary-container font-bold transition-all duration-150" href="#">
+<span class="material-symbols-outlined" data-icon="transform">transform</span>
+<span class="font-label-md text-label-md">Converter</span>
+</a>
+<!-- Inactive Tab: Metadata Generator -->
+<a class="flex items-center gap-sm px-sm py-sm rounded-lg text-on-surface-variant hover:bg-surface-variant transition-all duration-150" href="#">
+<span class="material-symbols-outlined" data-icon="description">description</span>
+<span class="font-label-md text-label-md">Metadata Generator</span>
+</a>
+</nav>
+</aside>
+<!-- Main Workspace -->
+<main class="flex-1 flex flex-col h-full overflow-hidden relative">
+<!-- TopNavBar -->
+<header class="bg-surface-container dark:bg-surface-container docked full-width top-0 h-12 border-b border-outline-variant flat no shadows flex justify-between items-center px-md w-full h-[48px] shrink-0 z-10">
+<div class="flex items-center gap-md">
+<span class="font-h2 text-h2 text-on-surface dark:text-on-surface tracking-tight">Image Toolkit</span>
+</div>
+<div class="flex items-center gap-sm">
+<span class="font-label-md text-label-md text-on-surface-variant">W2 Tech Solutions</span>
+<div class="w-6 h-6 rounded-full bg-surface-variant flex items-center justify-center border border-outline-variant">
+<span class="material-symbols-outlined text-[14px]">corporate_fare</span>
+</div>
+</div>
+</header>
+<!-- Canvas -->
+<div class="flex-1 overflow-y-auto p-lg pb-xl space-y-md">
+<!-- Header Action Card -->
+<div class="bg-surface-container-low border border-surface-variant rounded-xl p-md flex flex-col md:flex-row justify-between items-start md:items-center gap-md shadow-sm">
+<div>
+<h1 class="font-h1 text-h1 text-on-surface">Image Converter</h1>
+<p class="font-body-md text-body-md text-on-surface-variant mt-base">Batch convert and upscale your images.</p>
+</div>
+<div class="flex items-center gap-sm w-full md:w-auto">
+<button class="flex-1 md:flex-none px-md py-sm rounded-lg border border-surface-variant text-on-surface font-label-md text-label-md hover:bg-surface transition-colors">
+                        Select Files
+                    </button>
+<button class="flex-1 md:flex-none px-md py-sm rounded-lg bg-inverse-primary text-white font-label-md text-label-md hover:opacity-90 transition-opacity flex items-center justify-center gap-sm">
+<span class="material-symbols-outlined text-[18px]">play_arrow</span>
+                        Process
+                    </button>
+</div>
+</div>
+<!-- Two Column Layout -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-md">
+<!-- Left Column: Selected Files -->
+<div class="lg:col-span-1 bg-surface-container-low border border-surface-variant rounded-xl flex flex-col h-[500px]">
+<div class="p-md border-b border-surface-variant flex justify-between items-center shrink-0">
+<h3 class="font-h3 text-h3 text-on-surface">Selected Files</h3>
+<button class="font-label-md text-label-md text-primary hover:text-primary-fixed transition-colors">Clear All</button>
+</div>
+<div class="flex-1 overflow-y-auto p-sm space-y-base">
+<!-- File Items -->
+<div class="flex items-center justify-between p-sm rounded-lg hover:bg-surface transition-colors group cursor-default border border-transparent hover:border-surface-variant">
+<div class="flex items-center gap-sm overflow-hidden">
+<span class="material-symbols-outlined text-on-surface-variant text-[18px]">image</span>
+<span class="font-code text-code text-on-surface truncate max-w-[150px]">hero_banner_v2_final.png</span>
+</div>
+<span class="font-label-md text-label-md text-on-surface-variant shrink-0">2.4 MB</span>
+</div>
+<div class="flex items-center justify-between p-sm rounded-lg hover:bg-surface transition-colors group cursor-default border border-transparent hover:border-surface-variant">
+<div class="flex items-center gap-sm overflow-hidden">
+<span class="material-symbols-outlined text-on-surface-variant text-[18px]">image</span>
+<span class="font-code text-code text-on-surface truncate max-w-[150px]">product_shot_01.png</span>
+</div>
+<span class="font-label-md text-label-md text-on-surface-variant shrink-0">1.8 MB</span>
+</div>
+<div class="flex items-center justify-between p-sm rounded-lg hover:bg-surface transition-colors group cursor-default border border-transparent hover:border-surface-variant">
+<div class="flex items-center gap-sm overflow-hidden">
+<span class="material-symbols-outlined text-on-surface-variant text-[18px]">image</span>
+<span class="font-code text-code text-on-surface truncate max-w-[150px]">icon_set_exported_raw.png</span>
+</div>
+<span class="font-label-md text-label-md text-on-surface-variant shrink-0">450 KB</span>
+</div>
+</div>
+</div>
+<!-- Right Column: Settings & Results -->
+<div class="lg:col-span-2 space-y-md flex flex-col">
+<!-- Settings Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-md shrink-0">
+<!-- Conversion Settings -->
+<div class="bg-surface-container-low border border-surface-variant rounded-xl p-md space-y-md">
+<h3 class="font-h3 text-h3 text-on-surface">Conversion Settings</h3>
+<div class="space-y-sm">
+<label class="flex items-center gap-sm cursor-pointer group">
+<input checked="" class="w-4 h-4 text-inverse-primary bg-background border-surface-variant focus:ring-inverse-primary focus:ring-offset-background" name="conversion_type" type="radio"/>
+<span class="font-body-md text-body-md text-on-surface group-hover:text-primary transition-colors">PNG → JPEG</span>
+</label>
+<label class="flex items-center gap-sm cursor-pointer group">
+<input class="w-4 h-4 text-inverse-primary bg-background border-surface-variant focus:ring-inverse-primary focus:ring-offset-background" name="conversion_type" type="radio"/>
+<span class="font-body-md text-body-md text-on-surface group-hover:text-primary transition-colors">JPEG → PNG</span>
+</label>
+</div>
+<div class="pt-sm border-t border-surface-variant">
+<label class="flex items-center gap-sm cursor-pointer group">
+<input checked="" class="w-4 h-4 rounded text-inverse-primary bg-background border-surface-variant focus:ring-inverse-primary focus:ring-offset-background" type="checkbox"/>
+<span class="font-body-md text-body-md text-on-surface group-hover:text-primary transition-colors">Enable AI Upscaling</span>
+</label>
+</div>
+</div>
+<!-- Upscaling Settings -->
+<div class="bg-surface-container-low border border-surface-variant rounded-xl p-md space-y-md">
+<h3 class="font-h3 text-h3 text-on-surface">Upscaling Settings</h3>
+<div class="space-y-xs">
+<label class="font-label-md text-label-md text-on-surface-variant block">Model</label>
+<select class="w-full bg-background border border-surface-variant rounded-lg px-sm py-xs font-body-md text-body-md text-on-surface focus:ring-1 focus:ring-inverse-primary focus:border-inverse-primary outline-none transition-all">
+<option>remacri-4x</option>
+<option>ultrasharp-4x</option>
+<option>high-fidelity-4x</option>
+<option>digital-art-4x</option>
+<option>ultramix-balanced-4x</option>
+</select>
+</div>
+<div class="space-y-xs">
+<label class="font-label-md text-label-md text-on-surface-variant block">Scale</label>
+<div class="flex gap-sm">
+<button class="px-md py-xs rounded-full border border-inverse-primary bg-inverse-primary/10 text-inverse-primary font-label-md text-label-md transition-colors">2x</button>
+<button class="px-md py-xs rounded-full border border-surface-variant bg-transparent text-on-surface-variant hover:border-outline-variant font-label-md text-label-md transition-colors">3x</button>
+<button class="px-md py-xs rounded-full border border-surface-variant bg-transparent text-on-surface-variant hover:border-outline-variant font-label-md text-label-md transition-colors">4x</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Results Section -->
+<div class="bg-surface-container-low border border-surface-variant rounded-xl flex flex-col flex-1 min-h-[200px]">
+<div class="p-md border-b border-surface-variant shrink-0">
+<h3 class="font-h3 text-h3 text-on-surface">Results</h3>
+</div>
+<div class="flex-1 overflow-y-auto p-sm space-y-base">
+<!-- Processed Item: Success -->
+<div class="flex items-center justify-between p-sm rounded-lg bg-surface border border-surface-variant group">
+<div class="flex items-center gap-md overflow-hidden">
+<span class="material-symbols-outlined text-[#4ade80] text-[18px]">check_circle</span>
+<div class="flex flex-col">
+<span class="font-code text-code text-on-surface truncate">hero_banner_v2_final_upscaled.jpg</span>
+<span class="font-label-md text-label-md text-on-surface-variant">Done • 8.1 MB</span>
+</div>
+</div>
+<button class="p-xs rounded bg-surface-variant text-on-surface hover:bg-outline-variant transition-colors" title="Download">
+<span class="material-symbols-outlined text-[18px]">download</span>
+</button>
+</div>
+<!-- Processed Item: Processing -->
+<div class="flex items-center justify-between p-sm rounded-lg bg-surface border border-surface-variant group">
+<div class="flex items-center gap-md overflow-hidden">
+<span class="material-symbols-outlined text-primary text-[18px] animate-spin">progress_activity</span>
+<div class="flex flex-col">
+<span class="font-code text-code text-on-surface truncate">product_shot_01_upscaled.jpg</span>
+<span class="font-label-md text-label-md text-on-surface-variant">Processing (45%)...</span>
+</div>
+</div>
+<div class="w-8 h-8"></div> <!-- Spacer for alignment -->
+</div>
+</div>
+<!-- Progress Bar Footer -->
+<div class="p-md border-t border-surface-variant bg-surface-container shrink-0 rounded-b-xl">
+<div class="flex justify-between items-center mb-sm">
+<span class="font-label-md text-label-md text-on-surface-variant">Processing Queue</span>
+<span class="font-code text-code text-on-surface">1 / 3 files processed</span>
+</div>
+<div class="w-full h-2 bg-background rounded-full overflow-hidden border border-surface-variant">
+<div class="h-full bg-inverse-primary w-1/3 transition-all duration-500 rounded-full"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Footer -->
+<footer class="bg-surface-container-lowest dark:bg-surface-container-lowest docked full-width bottom-0 border-t border-outline-variant flat no shadows fixed bottom-0 w-full flex flex-col items-center gap-xs p-md shrink-0 z-10 hidden md:flex">
+<span class="font-body-sm text-body-sm text-on-surface-variant dark:text-on-surface-variant">© Ready</span>
+<a class="font-body-sm text-body-sm text-on-surface-variant hover:text-primary transition-colors cursor-default" href="#">Ad Space — 728x90</a>
+</footer>
+</main>
+</body></html>

@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Image Toolkit - Metadata Generator</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "on-secondary-fixed": "#1b1b1e",
+                        "primary": "#d0bcff",
+                        "on-secondary-container": "#b6b4b8",
+                        "on-primary-fixed": "#23005c",
+                        "inverse-on-surface": "#322f39",
+                        "secondary": "#c8c5ca",
+                        "on-secondary": "#303033",
+                        "surface": "#15121b",
+                        "on-secondary-fixed-variant": "#47464a",
+                        "primary-container": "#a078ff",
+                        "error-container": "#93000a",
+                        "outline-variant": "#494454",
+                        "on-tertiary-container": "#3f2300",
+                        "secondary-fixed-dim": "#c8c5ca",
+                        "secondary-fixed": "#e4e1e6",
+                        "error": "#ffb4ab",
+                        "tertiary-container": "#ca801e",
+                        "surface-dim": "#15121b",
+                        "on-background": "#e7e0ed",
+                        "surface-container-low": "#1d1a23",
+                        "surface-variant": "#37333d",
+                        "on-tertiary-fixed": "#2c1700",
+                        "on-surface": "#e7e0ed",
+                        "inverse-surface": "#e7e0ed",
+                        "on-primary-fixed-variant": "#5516be",
+                        "surface-container-high": "#2c2832",
+                        "surface-bright": "#3b3742",
+                        "surface-container-highest": "#37333d",
+                        "tertiary": "#ffb869",
+                        "background": "#15121b",
+                        "primary-fixed": "#e9ddff",
+                        "on-tertiary-fixed-variant": "#673d00",
+                        "tertiary-fixed-dim": "#ffb869",
+                        "secondary-container": "#47464a",
+                        "on-error": "#690005",
+                        "primary-fixed-dim": "#d0bcff",
+                        "surface-container": "#211e27",
+                        "on-primary": "#3c0091",
+                        "surface-tint": "#d0bcff",
+                        "inverse-primary": "#6d3bd7",
+                        "on-error-container": "#ffdad6",
+                        "on-primary-container": "#340080",
+                        "on-surface-variant": "#cbc3d7",
+                        "outline": "#958ea0",
+                        "surface-container-lowest": "#0f0d15",
+                        "on-tertiary": "#482900",
+                        "tertiary-fixed": "#ffdcbb"
+                    },
+                    borderRadius: {
+                        DEFAULT: "0.25rem",
+                        lg: "0.5rem",
+                        xl: "0.75rem",
+                        full: "9999px"
+                    },
+                    spacing: {
+                        lg: "1.5rem",
+                        xl: "2rem",
+                        sm: "0.5rem",
+                        md: "1rem",
+                        base: "4px",
+                        "container-margin": "1.5rem",
+                        gutter: "1rem",
+                        xs: "0.25rem"
+                    },
+                    fontFamily: {
+                        "body-sm": ["Geist"],
+                        "display": ["Geist"],
+                        "body-lg": ["Geist"],
+                        "h3": ["Geist"],
+                        "h2": ["Geist"],
+                        "code": ["JetBrains Mono"],
+                        "label-md": ["Geist"],
+                        "body-md": ["Geist"],
+                        "h1": ["Geist"]
+                    },
+                    fontSize: {
+                        "body-sm": ["13px", { lineHeight: "18px", fontWeight: "400" }],
+                        "display": ["30px", { lineHeight: "36px", letterSpacing: "-0.02em", fontWeight: "600" }],
+                        "body-lg": ["16px", { lineHeight: "24px", fontWeight: "400" }],
+                        "h3": ["16px", { lineHeight: "24px", fontWeight: "600" }],
+                        "h2": ["20px", { lineHeight: "28px", letterSpacing: "-0.01em", fontWeight: "600" }],
+                        "code": ["13px", { lineHeight: "20px", fontWeight: "400" }],
+                        "label-md": ["12px", { lineHeight: "16px", fontWeight: "500" }],
+                        "body-md": ["14px", { lineHeight: "20px", fontWeight: "400" }],
+                        "h1": ["24px", { lineHeight: "32px", letterSpacing: "-0.015em", fontWeight: "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body {
+            background-color: #09090b; /* Level 0 Base */
+            color: #e7e0ed;
+        }
+        .surface-card {
+            background-color: #18181b; /* Level 1 Card */
+            border: 1px solid #27272a;
+        }
+        .surface-popover {
+            background-color: #18181b; /* Level 2 */
+            border: 1px solid #27272a;
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.5);
+        }
+        
+        /* Custom scrollbar for webkit */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #09090b;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #27272a;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #3f3f46;
+        }
+    </style>
+</head>
+<body class="flex h-screen overflow-hidden font-body-md text-body-md">
+<!-- SideNavBar -->
+<aside class="flex flex-col w-[240px] h-full bg-surface-container-low dark:bg-surface-container-low border-r border-outline-variant transition-all duration-150 z-20 hidden md:flex flex-shrink-0">
+<div class="p-lg flex items-center gap-md border-b border-outline-variant h-12 box-border">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">widgets</span>
+<div class="flex flex-col">
+<span class="font-h3 text-h3 text-primary">Toolkit</span>
+<span class="font-label-md text-label-md text-on-surface-variant">V1.0</span>
+</div>
+</div>
+<nav class="flex-1 py-md flex flex-col gap-xs px-sm">
+<a class="flex items-center gap-sm px-md py-sm rounded-DEFAULT text-on-surface-variant hover:bg-surface-variant transition-colors" href="#">
+<span class="material-symbols-outlined">transform</span>
+<span class="font-label-md text-label-md">Converter</span>
+</a>
+<a class="flex items-center gap-sm px-md py-sm rounded-DEFAULT bg-secondary-container text-on-secondary-container font-bold transition-colors" href="#">
+<span class="material-symbols-outlined">description</span>
+<span class="font-label-md text-label-md">Metadata Generator</span>
+</a>
+</nav>
+</aside>
+<!-- Main Content Area -->
+<div class="flex-1 flex flex-col min-w-0 overflow-hidden relative pb-[64px]"> <!-- padding bottom for footer -->
+<!-- TopNavBar -->
+<header class="flex justify-between items-center px-md w-full h-[48px] bg-surface-container dark:bg-surface-container border-b border-outline-variant transition-colors duration-200 z-10 flex-shrink-0">
+<div class="flex items-center gap-md">
+<!-- Mobile Menu Button (Visible only on mobile) -->
+<button class="md:hidden p-xs text-on-surface hover:bg-surface-variant rounded-DEFAULT transition-colors">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<span class="font-h2 text-h2 text-on-surface dark:text-on-surface font-extrabold tracking-tight">Image Toolkit</span>
+</div>
+<div class="flex items-center gap-md">
+<span class="font-body-sm text-body-sm text-primary dark:text-primary hidden sm:inline-block">W2 Tech Solutions</span>
+<div class="w-8 h-8 rounded-full bg-surface-variant flex items-center justify-center overflow-hidden border border-outline-variant">
+<span class="material-symbols-outlined text-on-surface-variant text-[20px]">person</span>
+</div>
+</div>
+</header>
+<!-- Canvas -->
+<main class="flex-1 overflow-y-auto p-lg flex flex-col gap-lg w-full max-w-5xl mx-auto">
+<!-- Header Section -->
+<div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-md surface-card p-lg rounded-lg">
+<div class="flex flex-col gap-xs">
+<h1 class="font-h1 text-h1 text-on-surface">Metadata Generator</h1>
+<p class="font-body-md text-body-md text-on-surface-variant">Auto-generate descriptive tags and titles for your images using AI.</p>
+</div>
+<div class="flex items-center gap-md">
+<button class="flex items-center gap-xs px-md py-sm rounded-DEFAULT border border-[#27272a] text-on-surface hover:bg-surface-variant transition-colors font-label-md text-label-md">
+<span class="material-symbols-outlined text-[18px]">add_photo_alternate</span>
+                        Select Images
+                    </button>
+<button class="flex items-center gap-xs px-md py-sm rounded-DEFAULT bg-[#8b5cf6] text-white hover:bg-primary-container transition-colors font-label-md text-label-md">
+<span class="material-symbols-outlined text-[18px]">auto_awesome</span>
+                        Generate All
+                    </button>
+</div>
+</div>
+<!-- Workspace Layout: Two Columns on large screens -->
+<div class="flex flex-col lg:flex-row gap-lg flex-1 min-h-0">
+<!-- Left Column: Selected Files & Progress -->
+<div class="w-full lg:w-1/3 flex flex-col gap-md">
+<div class="surface-card rounded-lg flex flex-col flex-1 min-h-0 max-h-[400px] lg:max-h-full">
+<div class="p-md border-b border-[#27272a] flex justify-between items-center bg-[#18181b]">
+<h2 class="font-h3 text-h3 text-on-surface flex items-center gap-xs">
+<span class="material-symbols-outlined text-[18px] text-on-surface-variant">folder_open</span>
+                                Queue (3)
+                            </h2>
+<button class="font-label-md text-label-md text-error hover:text-error-container transition-colors">Clear All</button>
+</div>
+<div class="flex-1 overflow-y-auto p-sm flex flex-col gap-base">
+<!-- File Item -->
+<div class="flex items-center justify-between p-sm rounded-DEFAULT hover:bg-[#27272a] transition-colors border border-transparent hover:border-[#3f3f46] group">
+<div class="flex items-center gap-sm overflow-hidden">
+<span class="material-symbols-outlined text-primary text-[18px]">image</span>
+<span class="font-code text-code text-on-surface truncate">sunset_mountain_view_01.png</span>
+</div>
+<button class="text-on-surface-variant opacity-0 group-hover:opacity-100 hover:text-error transition-all">
+<span class="material-symbols-outlined text-[18px]">close</span>
+</button>
+</div>
+<!-- File Item -->
+<div class="flex items-center justify-between p-sm rounded-DEFAULT bg-[#27272a] border border-[#3f3f46]">
+<div class="flex items-center gap-sm overflow-hidden">
+<span class="material-symbols-outlined text-tertiary text-[18px] animate-spin">sync</span>
+<span class="font-code text-code text-on-surface truncate">city_skyline_night.jpg</span>
+</div>
+<span class="font-label-md text-label-md text-tertiary">Processing</span>
+</div>
+<!-- File Item -->
+<div class="flex items-center justify-between p-sm rounded-DEFAULT hover:bg-[#27272a] transition-colors border border-transparent hover:border-[#3f3f46] group">
+<div class="flex items-center gap-sm overflow-hidden">
+<span class="material-symbols-outlined text-on-surface-variant text-[18px]">image</span>
+<span class="font-code text-code text-on-surface-variant truncate">office_meeting_04.jpg</span>
+</div>
+<button class="text-on-surface-variant opacity-0 group-hover:opacity-100 hover:text-error transition-all">
+<span class="material-symbols-outlined text-[18px]">close</span>
+</button>
+</div>
+</div>
+<div class="p-md border-t border-[#27272a] bg-[#18181b] flex flex-col gap-sm">
+<div class="flex justify-between items-center">
+<span class="font-label-md text-label-md text-on-surface-variant">Progress</span>
+<span class="font-label-md text-label-md text-primary">1 / 3</span>
+</div>
+<div class="w-full h-1 bg-[#27272a] rounded-full overflow-hidden">
+<div class="h-full bg-primary w-1/3 transition-all duration-500"></div>
+</div>
+<span class="font-code text-code text-on-surface-variant truncate text-[11px] mt-xs">Processing: city_skyline_night.jpg</span>
+</div>
+</div>
+</div>
+<!-- Right Column: Results Panel -->
+<div class="w-full lg:w-2/3 flex flex-col gap-md h-[500px] lg:h-auto">
+<div class="surface-card rounded-lg flex flex-col flex-1 min-h-0 relative">
+<div class="p-md border-b border-[#27272a] flex justify-between items-center bg-[#18181b] z-10 sticky top-0 rounded-t-lg">
+<h2 class="font-h3 text-h3 text-on-surface flex items-center gap-xs">
+<span class="material-symbols-outlined text-[18px] text-primary">data_object</span>
+                                Results
+                            </h2>
+<div class="flex items-center gap-sm">
+<button class="p-xs text-on-surface-variant hover:text-on-surface transition-colors" title="List View">
+<span class="material-symbols-outlined text-[18px]">view_list</span>
+</button>
+<button class="p-xs text-primary bg-primary/10 rounded-DEFAULT transition-colors" title="Grid View">
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">grid_view</span>
+</button>
+</div>
+</div>
+<div class="flex-1 overflow-y-auto p-md flex flex-col gap-md">
+<!-- Result Card 1 -->
+<div class="surface-card p-md rounded-DEFAULT flex flex-col gap-sm hover:border-[#3f3f46] transition-colors">
+<div class="flex justify-between items-start">
+<div class="flex items-center gap-xs text-on-surface-variant mb-xs">
+<span class="material-symbols-outlined text-[14px]">image</span>
+<span class="font-code text-code text-[11px]">sunset_mountain_view_01.png</span>
+</div>
+<span class="material-symbols-outlined text-primary text-[18px]" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+<h3 class="font-h3 text-h3 text-on-surface">Majestic Alpine Sunset Over Pine Forest</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
+                                    A breathtaking landscape view capturing the sun setting behind sharp alpine peaks. The foreground features a dense, dark green pine forest. The sky is illuminated in vibrant hues of orange, purple, and magenta. High contrast, nature photography.
+                                </p>
+<div class="flex flex-wrap gap-xs mt-xs">
+<span class="px-sm py-[2px] rounded-sm bg-primary/10 text-primary font-label-md text-[10px] uppercase tracking-wider border border-primary/20">Landscape</span>
+<span class="px-sm py-[2px] rounded-sm bg-primary/10 text-primary font-label-md text-[10px] uppercase tracking-wider border border-primary/20">Sunset</span>
+<span class="px-sm py-[2px] rounded-sm bg-primary/10 text-primary font-label-md text-[10px] uppercase tracking-wider border border-primary/20">Mountains</span>
+<span class="px-sm py-[2px] rounded-sm bg-primary/10 text-primary font-label-md text-[10px] uppercase tracking-wider border border-primary/20">Nature</span>
+<span class="px-sm py-[2px] rounded-sm bg-surface-variant text-on-surface-variant font-label-md text-[10px] uppercase tracking-wider">+4</span>
+</div>
+<div class="flex justify-end gap-sm mt-sm pt-sm border-t border-[#27272a]">
+<button class="font-label-md text-label-md text-on-surface-variant hover:text-on-surface transition-colors">Edit</button>
+<button class="font-label-md text-label-md text-primary hover:text-primary-container transition-colors">Copy TXT</button>
+</div>
+</div>
+</div>
+<div class="p-md border-t border-[#27272a] bg-[#18181b] z-10 sticky bottom-0 rounded-b-lg flex justify-end">
+<button class="flex items-center gap-xs px-md py-sm rounded-DEFAULT border border-[#27272a] text-on-surface hover:bg-surface-variant transition-colors font-label-md text-label-md">
+<span class="material-symbols-outlined text-[18px]">download</span>
+                                Download All (.txt)
+                            </button>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Footer -->
+<footer class="fixed bottom-0 w-full flex flex-col items-center gap-xs bg-surface-container-lowest dark:bg-surface-container-lowest border-t border-outline-variant font-body-sm text-body-sm text-on-surface-variant dark:text-on-surface-variant cursor-default py-xs z-30">
+<div class="flex justify-between items-center w-full px-md">
+<span>Ready</span>
+<a class="hover:text-primary transition-colors" href="#">Ad Space — 728×90</a>
+</div>
+</footer>
+</div>
+</body></html>

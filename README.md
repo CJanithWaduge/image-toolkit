@@ -1,14 +1,14 @@
 # Image Toolkit
 
-A fully local, CPU-only desktop app for generating Zedge-optimized wallpaper metadata using AI vision and language models. No API keys, no cloud calls — everything runs on your machine.
+A fully local, browser-based desktop app for generating Zedge-optimized wallpaper metadata using AI vision and language models. No API keys, no cloud calls — everything runs on your machine.
 
 ## Features
 
-### Converter Tab
+### Image Converter
 - Batch convert **PNG ↔ JPEG** via Pillow
 - **AI 4x upscaling** via Upscayl CLI with multiple models (remacri, ultrasharp, high-fidelity, etc.)
 
-### Metadata Generator Tab
+### Metadata Generator
 - Select 1+ images, click Generate
 - **Florence-2** (Microsoft) describes the image
 - **Qwen2.5-1.5B** (GGUF, Q4_K_M) generates Zedge-optimized title, 10 tags, and description
@@ -58,7 +58,7 @@ Install Upscayl from https://www.upscayl.org. The app expects it at `C:\Program 
 
 - **Python 3.10+**
 - **~8 GB RAM** (both Florence-2 and Qwen2.5 run simultaneously during generation)
-- **Windows** (Upscayl integration is Windows-specific; core generation works cross-platform)
+- **Upscayl** *(optional)* — AI upscaling, installed at `C:\Program Files\Upscayl`
 
 ## Quick Start
 
@@ -76,12 +76,12 @@ pip install -r requirements.txt
 python main.py
 ```
 
-First launch will download Florence-2 and the embedding model (~1 GB total). Subsequent launches are instant.
+First launch will download Florence-2 and the embedding model (~1 GB total). Then open http://127.0.0.1:8000 in your browser.
 
 ## Project Structure
 
 ```
-backend/               # Business logic (no tkinter)
+backend/               # Business logic (no frontend code)
 ├── config.py          # Paths and constants
 ├── converter.py       # Image conversion (Pillow)
 ├── local_llm.py       # Qwen2.5 GGUF / transformers inference
@@ -92,19 +92,11 @@ backend/               # Business logic (no tkinter)
 ├── models.py          # ImageJob & JobResult dataclasses
 └── pipeline.py        # Processing orchestrator
 
-frontend/              # Tkinter UI layer
-├── app.py             # MainWindow (notebook)
-├── converter_tab.py   # Converter UI
-├── metadata_tab.py    # Metadata generator UI
-└── styles.py          # Theme constants
+templates/
+└── index.html          # Single-page browser UI (dark theme, Tailwind)
 
-resources/
-├── models/            # GGUF + Upscayl model files (gitignored)
-├── bins/              # Upscayl binaries (gitignored)
-└── skills/            # Zedge SEO skill (loaded into vector store)
-
-main.py                # Entry point
-```
+server.py               # Flask server (API routes + static file serving)
+main.py                 # Entry point — launches Flask
 
 ## Tests
 
