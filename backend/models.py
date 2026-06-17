@@ -1,9 +1,13 @@
+from __future__ import annotations
+
 from dataclasses import dataclass
 from typing import Optional
 
 
-@dataclass
+@dataclass(slots=True)
 class ImageJob:
+    """A single image conversion/upscaling job."""
+
     source_path: str
     output_dir: str
     output_name: str
@@ -13,8 +17,10 @@ class ImageJob:
     upscale_scale: int = 4
 
 
-@dataclass
+@dataclass(slots=True)
 class JobResult:
+    """Outcome of a single processing job."""
+
     success: bool
     output_path: Optional[str] = None
     error: Optional[str] = None

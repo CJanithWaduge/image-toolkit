@@ -1,24 +1,33 @@
+from __future__ import annotations
+
 import os
 import sys
+from enum import Enum
+from pathlib import Path
 
 
-def _get_base_path():
+class UpscaleModel(str, Enum):
+    REMACRI = "remacri-4x"
+    ULTRASHARP = "ultrasharp-4x"
+    HIGH_FIDELITY = "high-fidelity-4x"
+    ULTRAMIX_BALANCED = "ultramix-balanced-4x"
+    DIGITAL_ART = "digital-art-4x"
+    UPSCAYL_STANDARD = "upscayl-standard-4x"
+    UPSCAYL_LITE = "upscayl-lite-4x"
+
+
+MODEL_LIST = [m.value for m in UpscaleModel]
+DEFAULT_MODEL = UpscaleModel.REMACRI.value
+
+
+def _get_project_root() -> Path:
     if getattr(sys, "frozen", False):
-        return os.path.dirname(sys.executable)
-    return os.path.dirname(os.path.abspath(__file__))
+        return Path(sys.executable).parent
+    return Path(__file__).resolve().parent.parent
 
 
-BASE_DIR = _get_base_path()
+PROJECT_ROOT: Path = _get_project_root()
+RESOURCES_DIR: Path = PROJECT_ROOT / "resources"
 
-UPSCAYL_EXE = os.path.join(BASE_DIR, "resources", "bin", "upscayl-bin.exe")
-UPSCAYL_MODELS = os.path.join(BASE_DIR, "resources", "models")
-
-AVAILABLE_MODELS = [
-    "remacri-4x",
-    "ultrasharp-4x",
-    "high-fidelity-4x",
-    "ultramix-balanced-4x",
-    "digital-art-4x",
-    "upscayl-standard-4x",
-    "upscayl-lite-4x",
-]
+UPSCAYL_EXE: str = str(RESOURCES_DIR / "bin" / "upscayl-bin.exe")
+UPSCAYL_MODELS: str = str(RESOURCES_DIR / "models")

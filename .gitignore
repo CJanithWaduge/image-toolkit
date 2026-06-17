@@ -26,9 +26,11 @@ Thumbs.db
 # Logs
 *.log
 
-# Upscayl resources (install separately)
-resources/
 
 # IDE
 .vscode/
 .idea/
+
+# Model files (too large for GitHub)
+resources/models/
+resources/bin/

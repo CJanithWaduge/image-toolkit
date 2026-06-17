@@ -30,7 +30,6 @@ A Tkinter desktop application for bulk image processing with AI-powered metadata
 pip install -r requirements.txt
 
 # Set your API key
-# Edit .env and replace: OPENCODE_API_KEY=your-key-here
 
 # Run
 python main.py
