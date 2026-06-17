@@ -1,11 +1,9 @@
 import logging
 import os
 import tempfile
-import threading
 import uuid
 from pathlib import Path
 
-import tempfile
 from flask import Flask, jsonify, render_template, request, send_file
 
 from backend.converter import ConversionMode, Converter
@@ -52,15 +50,10 @@ def api_converter_process():
     enable_upscale = request.form.get("upscale", "false").lower() == "true"
     model = request.form.get("model", "remacri-4x")
     scale = int(request.form.get("scale", "2"))
-    user_output_dir = request.form.get("output_dir", "").strip()
 
     mode = ConversionMode.PNG_TO_JPEG if direction == "png2jpeg" else ConversionMode.JPEG_TO_PNG
     suffix = Path(file.filename).suffix
-    if user_output_dir:
-        output_dir = os.path.abspath(user_output_dir)
-    else:
-        output_dir = tempfile.mkdtemp()
-    os.makedirs(output_dir, exist_ok=True)
+    output_dir = tempfile.mkdtemp()
     output_name = f"{Path(file.filename).stem}_{uuid.uuid4().hex[:8]}"
     input_path = os.path.join(output_dir, f"input{suffix}")
 
