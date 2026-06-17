@@ -50,10 +50,15 @@ def api_converter_process():
     enable_upscale = request.form.get("upscale", "false").lower() == "true"
     model = request.form.get("model", "remacri-4x")
     scale = int(request.form.get("scale", "2"))
+    user_output_dir = request.form.get("output_dir", "").strip()
 
     mode = ConversionMode.PNG_TO_JPEG if direction == "png2jpeg" else ConversionMode.JPEG_TO_PNG
     suffix = Path(file.filename).suffix
-    output_dir = tempfile.mkdtemp()
+    if user_output_dir:
+        output_dir = os.path.abspath(user_output_dir)
+    else:
+        output_dir = tempfile.mkdtemp()
+    os.makedirs(output_dir, exist_ok=True)
     output_name = f"{Path(file.filename).stem}_{uuid.uuid4().hex[:8]}"
     input_path = os.path.join(output_dir, f"input{suffix}")
 
@@ -69,10 +74,12 @@ def api_converter_process():
             upscale_scale=scale,
         )
         result = pipeline.process(job)
+        output_path = Path(result.output_path) if result.output_path else None
         return jsonify({
             "success": result.success,
             "filename": file.filename,
-            "output_name": Path(result.output_path).name if result.output_path else output_name,
+            "output_name": output_path.name if output_path else output_name,
+            "output_path": str(output_path.resolve()) if output_path else "",
             "error": result.error or "",
         })
     except Exception as e:

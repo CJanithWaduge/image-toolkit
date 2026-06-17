@@ -174,6 +174,14 @@ body { background-color: #09090b; color: #e7e0ed; }
               </div>
             </div>
           </div>
+          <div class="pt-sm border-t border-[#27272a]">
+            <label class="font-label-md text-label-md text-on-surface-variant block mb-xs">Output Folder</label>
+            <div class="flex gap-sm">
+              <input id="conv-output-dir" type="text" value="downloads/" class="flex-1 bg-background border border-surface-variant rounded-lg px-sm py-xs font-code text-code text-on-surface focus:ring-1 focus:ring-inverse-primary focus:border-inverse-primary outline-none transition-all">
+              <button id="conv-output-reset" class="px-md py-xs rounded-lg border border-surface-variant text-on-surface-variant hover:bg-surface-variant transition-colors font-label-md text-label-md shrink-0">Reset</button>
+            </div>
+            <p class="font-label-md text-label-md text-on-surface-variant mt-xs">Files will be saved to this directory on the server</p>
+          </div>
         </div>
         <div class="surface-card rounded-lg flex flex-col flex-1 min-h-0">
           <div class="p-md border-b border-[#27272a] bg-[#18181b] rounded-t-lg">
@@ -187,8 +195,12 @@ body { background-color: #09090b; color: #e7e0ed; }
               <span class="font-label-md text-label-md text-on-surface-variant">Processing Queue</span>
               <span id="conv-progress-text" class="font-code text-code text-on-surface">0 / 0 files processed</span>
             </div>
-            <div class="w-full h-2 bg-background rounded-full overflow-hidden border border-surface-variant">
+            <div class="w-full h-2 bg-background rounded-full overflow-hidden border border-surface-variant relative">
               <div id="conv-progress-bar" class="h-full bg-inverse-primary w-0 transition-all duration-500 rounded-full"></div>
+            </div>
+            <div class="flex justify-between items-center mt-xs">
+              <span class="font-label-md text-label-md text-on-surface-variant" id="conv-progress-status">Preparing...</span>
+              <span id="conv-progress-pct" class="font-label-md text-label-md text-inverse-primary font-bold">0%</span>
             </div>
           </div>
         </div>
@@ -302,7 +314,13 @@ const convResults = document.getElementById('conv-results');
 const convProgress = document.getElementById('conv-progress');
 const convProgressBar = document.getElementById('conv-progress-bar');
 const convProgressText = document.getElementById('conv-progress-text');
+const convProgressPct = document.getElementById('conv-progress-pct');
+const convProgressStatus = document.getElementById('conv-progress-status');
+const convOutputDir = document.getElementById('conv-output-dir');
+const convOutputReset = document.getElementById('conv-output-reset');
 let convFiles = [];
+
+convOutputReset.addEventListener('click', () => { convOutputDir.value = 'downloads/'; });
 
 convUpscaleToggle.addEventListener('change', () => {
   convUpscaleSettings.classList.toggle('hidden', !convUpscaleToggle.checked);
@@ -350,20 +368,26 @@ convProcessBtn.addEventListener('click', async () => {
   const upscale = convUpscaleToggle.checked;
   const model = document.getElementById('conv-upscale-model').value;
   const scale = document.querySelector('.scale-btn.border-inverse-primary')?.dataset.scale || 2;
+  const outputDir = convOutputDir.value.trim() || 'downloads/';
   convProgress.classList.remove('hidden');
   convResults.innerHTML = '';
+  convProgressStatus.textContent = 'Processing...';
   const results = [];
   for (let i = 0; i < convFiles.length; i++) {
+    const pct = Math.round(((i + 1) / convFiles.length) * 100);
     const f = convFiles[i];
     setStatus(`Converting ${f.name} (${i+1}/${convFiles.length})...`);
     convProgressText.textContent = `${i+1} / ${convFiles.length} files processed`;
-    convProgressBar.style.width = `${((i+1)/convFiles.length)*100}%`;
+    convProgressBar.style.width = `${pct}%`;
+    convProgressPct.textContent = `${pct}%`;
+    convProgressStatus.textContent = `${f.name} (${i+1}/${convFiles.length})`;
     const fd = new FormData();
     fd.append('image', f);
     fd.append('direction', direction);
     fd.append('upscale', upscale);
     fd.append('model', model);
     fd.append('scale', scale);
+    fd.append('output_dir', outputDir);
     const resp = await fetch('/api/converter/process', { method: 'POST', body: fd });
     const data = await resp.json();
     results.push(data);
@@ -373,12 +397,15 @@ convProcessBtn.addEventListener('click', async () => {
           <span class="material-symbols-outlined ${r.success ? 'text-[#4ade80]' : 'text-error'} text-[18px]">${r.success ? 'check_circle' : 'error'}</span>
           <div class="flex flex-col">
             <span class="font-code text-code text-on-surface truncate">${r.output_name || r.filename}</span>
-            <span class="font-label-md text-label-md text-on-surface-variant">${r.success ? 'Done' : r.error}</span>
+            <span class="font-label-md text-label-md text-on-surface-variant">${r.success ? r.output_path || 'Done' : r.error}</span>
           </div>
         </div>
       </div>`
     ).join('');
   }
+  convProgressBar.style.width = '100%';
+  convProgressPct.textContent = '100%';
+  convProgressStatus.textContent = 'Complete';
   setStatus(`Done — ${convFiles.length} file(s) processed`);
 });
 
